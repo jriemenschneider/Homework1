@@ -11,7 +11,7 @@ img: dirs
 	dd if=stage1.img of=mbr.img seek=1 conv=notrunc
 
 run:
-	qemu-system-i386 -hda mbr.img
+	qemu-system-i386 -curses  -hda mbr.img
 
 clean:
 	rm -f obj/*
