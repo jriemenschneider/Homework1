@@ -10,31 +10,33 @@ main:
 	xor bh,bh
 	mov bl, 7
 
-	mov bx, WELCOME ;put string in ax because its a string not a character
+	mov bx, WELCOME
 	call putStr
-	mov dh, 80 ;where it needs to go to start reading from the sectors?
+	mov dh, 50 ;needs to read 50 sectors
+	mov dl, 0
+	mov bx, 0x7E00 ;memory address
 	call readSector
-	jmp 0x7E00 ;then jump to 7E00(from instructions
+	jmp 0x7E00 ;then jump to 7E00(from instructions)
 
 WELCOME:
 	db 'welcome',0
 putStr:
-	mov al,[bx] ;calls the BIOS
-	cmp al, 0
-	jne moveForward	
+	mov al,[bx]
+	cmp al, 0 ;when it reaches end of null terminated string,0, it stops
+	jne moveForward	;moves it forward one character in the string at a time
 	ret
 readSector:
-	mov bx, 0x7E00 ;Memory adress = 0x7E00
 	mov ah, 0x02 ; BIOS read sector
-	mov al, 50 ;read 50 sectors or so
-	mov ch, 0x01 ;track
+	mov al, dh ;read 50 sectors or so which is held in dh(in main)
+	mov ch, 0x00
 	mov cl, 0x02 ;sector after mbr
-	mov dh, 0x01 ;drive head
-	;mov dl, 00 ;drive you're reading
+	mov dh, 0x00
+	mov dl, 0x80
+	mov bx, 0x7E00
 	int 0x13 ;from Ralf's interrupt list
 	ret
 
-moveForward:;moves one space forward in character
+moveForward:;moves one character forward in string, then runs the same process on the new character in putStr
 	mov al,[bx]
 	int 0x10
 	add bx, 1
