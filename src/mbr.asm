@@ -12,11 +12,9 @@ main:
 
 	mov bx, WELCOME ;put string in ax because its a string not a character
 	call putStr
-	;mov ah, 80 ;where it needs to go to start reading from the sectors?
-	;call readSector
-	;jmp 0x7E00 ;then jump to 7E00(from instructions
-loop:
-	jmp loop
+	mov dh, 80 ;where it needs to go to start reading from the sectors?
+	call readSector
+	jmp 0x7E00 ;then jump to 7E00(from instructions
 
 WELCOME:
 	db 'welcome',0
@@ -25,18 +23,18 @@ putStr:
 	cmp al, 0
 	jne moveForward	
 	ret
-;readSector:
-	;mov bx, 0x7E00: ;Memory adress = 0x7E00
+readSector:
+	mov bx, 0x7E00 ;Memory adress = 0x7E00
 	;mov es, bx
-	;mov bx, 0 start to read into this
-	;mov ah, 2h ; BIOS read sector
-	;mov al, 80 ;read 50 sectors or so
-	;mov ch, 1 ;track
-	;mov cl, 2 ;sector after mbr
-	;mov dh, 1 ;drive head
-	;mov dl, 0 ;drive you're reading
-	;int 0x13 ;from Ralf's interrupt list
-	;ret
+	;mov bx, 0 ;start to read into this
+	mov ah, 0x02 ; BIOS read sector
+	mov al, 80 ;read 50 sectors or so
+	mov ch, 1 ;track
+	mov cl, 2 ;sector after mbr
+	mov dh, 1 ;drive head
+	;mov dl, 00 ;drive you're reading
+	int 0x13 ;from Ralf's interrupt list
+	ret
 
 moveForward:;moves one space forward in character
 	mov al,[bx]
