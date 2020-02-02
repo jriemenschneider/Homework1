@@ -25,13 +25,11 @@ putStr:
 	ret
 readSector:
 	mov bx, 0x7E00 ;Memory adress = 0x7E00
-	;mov es, bx
-	;mov bx, 0 ;start to read into this
 	mov ah, 0x02 ; BIOS read sector
-	mov al, 80 ;read 50 sectors or so
-	mov ch, 1 ;track
-	mov cl, 2 ;sector after mbr
-	mov dh, 1 ;drive head
+	mov al, 50 ;read 50 sectors or so
+	mov ch, 0x01 ;track
+	mov cl, 0x02 ;sector after mbr
+	mov dh, 0x01 ;drive head
 	;mov dl, 00 ;drive you're reading
 	int 0x13 ;from Ralf's interrupt list
 	ret
